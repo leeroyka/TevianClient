@@ -21,9 +21,8 @@
 //eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2Mzc2NTU4NTMsIm5iZiI6MTYzNzY1NTg1MywianRpIjoiY2EyMmIyYzEtZmE1OC00OWRkLTljMGEtMWYwNDlkYWI4ZjEyIiwic3ViIjoyNzIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.o4uKVenHwmahLprqwYPWdt76Sg9RcbSRdGgswnY4T2s
 
 
-Domain::TevianClient::TevianClient(QObject* parent)
-  : QObject(parent)
-  , mNumberOfImages(0)
+Domain::TevianClient::TevianClient()
+  :  mNumberOfImages(0)
 {
   mPictures = std::make_shared<QVector<Picture>>();
   authentication();
@@ -56,7 +55,6 @@ size_t Domain::TevianClient::getPicturesSize() const
 
 void Domain::TevianClient::authentication()
 {
-  QEventLoop loop;
   QUrl url(M_SERVER);
   url.setPath(M_PATH_LOGIN);
 
@@ -69,22 +67,7 @@ void Domain::TevianClient::authentication()
 
   QByteArray rawData = QJsonDocument(jsonBody).toJson();
 
-  std::unique_ptr<QNetworkAccessManager> mNetworkManager = std::make_unique<QNetworkAccessManager>();
-  QNetworkReply* reply = mNetworkManager->post(request, rawData);
-  connect(mNetworkManager.get(), &QNetworkAccessManager::finished, [=]()
-  {
-    if (reply->error())
-        throw std::runtime_error("Authentication error: " +reply->errorString().toStdString());
-
-    QByteArray rawData(reply->readAll());
-    QJsonDocument json = QJsonDocument::fromJson(rawData);
-    QJsonObject jsonData = json["data"].toObject();
-    setJWToken(jsonData["access_token"].toString());
-    qDebug()<<getJWToken();
-  });
-  reply->ignoreSslErrors();
-  connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-  loop.exec();
+  postRequest(request, rawData);
 }
 
 void Domain::TevianClient::setJWToken(const QString& token)
@@ -94,7 +77,6 @@ void Domain::TevianClient::setJWToken(const QString& token)
 
 void Domain::TevianClient::detectRequest(const QString& imagePath)
 {
-  QEventLoop loop;
   QUrl url(M_SERVER);
   url.setPath(M_PATH_DETECT);
 
@@ -105,54 +87,14 @@ void Domain::TevianClient::detectRequest(const QString& imagePath)
   QNetworkRequest request(url);
   request.setHeader(QNetworkRequest::ContentTypeHeader, M_CONTENT_TYPE_JPEG);
   request.setRawHeader("Authorization", getJWToken().toUtf8());
+  request.setRawHeader("Content-Disposition", imagePath.toUtf8());
 
   QFile image(imagePath);
   if(!image.open(QIODevice::ReadOnly))
     throw std::runtime_error("Failed image opening");
 
   QByteArray rawImage(image.readAll());
-
-    std::unique_ptr<QNetworkAccessManager> mNetworkManager = std::make_unique<QNetworkAccessManager>();
-  QNetworkReply* reply = mNetworkManager->post(request, rawImage);
-  connect(mNetworkManager.get(), &QNetworkAccessManager::finished, [=]()
-  {
-    Picture picture;
-    picture.setPictureName(imagePath);
-    qDebug()<<imagePath;
-    if (reply->error())
-    {
-      picture.proccessingFailed();
-      picture.setErrorString(reply->errorString());
-      mPictures->push_back(picture);
-      return ;
-    }
-    picture.proccessingSuccesful();
-
-    QByteArray rawData(reply->readAll());
-    QJsonDocument jsonReply(QJsonDocument::fromJson(rawData));
-
-    for(auto jsonValue : jsonReply["data"].toArray())
-    {
-      auto valueObject = jsonValue.toObject();
-
-      auto rectangleObject = valueObject["bbox"].toObject();
-
-      Face face(rectangleObject["x"].toInt(),
-                rectangleObject["y"].toInt(),
-                rectangleObject["height"].toInt(),
-                rectangleObject["width"].toInt());
-
-      auto demographicObject = valueObject["demographics"].toObject();
-      face.setAge(demographicObject["age"].toObject()["mean"].toDouble(),
-                  demographicObject["age"].toObject()["variance"].toDouble());
-      face.setGender(demographicObject["gender"].toString());
-      picture.addFace(face);
-    }
-    mPictures->push_back(picture);
-  });
-  reply->ignoreSslErrors();
-  connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-  loop.exec();
+    postRequest(request,rawImage);
 }
 
 QString Domain::TevianClient::getJWToken() const
@@ -161,24 +103,81 @@ QString Domain::TevianClient::getJWToken() const
 }
 
 //TODO
-/*
+
 void Domain::TevianClient::postRequest(QNetworkRequest& request, QByteArray& data)
 {
   QEventLoop loop;
+  std::unique_ptr<QNetworkAccessManager>
+          mNetworkManager = std::make_unique<QNetworkAccessManager>();
   QNetworkReply* reply = mNetworkManager->post(request, data);
   connect(mNetworkManager.get(), &QNetworkAccessManager::finished, [=]()
   {
 
+    QJsonObject json;
     if (reply->error())
-
-      throw std::runtime_error("REST Api Error: " +reply->errorString().toStdString());
-    QByteArray rawData(reply->readAll());
-    QJsonDocument json = QJsonDocument::fromJson(rawData);
-    QJsonObject metaData;
-    metaData["path"] = request.url().path();
+    {
+        json["error"] = reply->errorString();
+    }
+    else
+    {
+        QByteArray rawData(reply->readAll());
+        json = QJsonDocument::fromJson(rawData).object();
+    }
+    if(request.hasRawHeader("Content-Disposition"))
+        json["Content-Disposition"] = QString(request.rawHeader("Content-Disposition"));
+    handler(request.url().path(),QJsonDocument(json).toJson());
 
   });
   reply->ignoreSslErrors();
   connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
   loop.exec();
-}*/
+}
+
+void Domain::TevianClient::handler(const QString& path, const QByteArray& data)
+{
+    if(path == M_PATH_LOGIN)
+    {
+        QJsonDocument json = QJsonDocument::fromJson(data);
+        if(json.object().contains("error"))
+        {
+            throw std::runtime_error("Authorization error: " +
+                                     json.object()["error"].toString().toStdString());
+        }
+        QJsonObject jsonData = json["data"].toObject();
+        setJWToken(jsonData["access_token"].toString());
+    } else if(path == M_PATH_DETECT)
+    {
+        Picture picture;
+        QJsonDocument json = QJsonDocument::fromJson(data);
+        picture.setPictureName(json.object()["Content-Disposition"].toString());
+        qDebug()<<json.object()["Content-Disposition"].toString();
+        if (json.object().contains("error"))
+        {
+          picture.proccessingFailed();
+          picture.setErrorString(json.object()["error"].toString());
+          mPictures->push_back(picture);
+          return ;
+        }
+        picture.proccessingSuccesful();
+
+        for(auto jsonValue : json["data"].toArray())
+        {
+          auto valueObject = jsonValue.toObject();
+
+          auto rectangleObject = valueObject["bbox"].toObject();
+
+          Face face(rectangleObject["x"].toInt(),
+                    rectangleObject["y"].toInt(),
+                    rectangleObject["height"].toInt(),
+                    rectangleObject["width"].toInt());
+
+          auto demographicObject = valueObject["demographics"].toObject();
+          face.setAge(demographicObject["age"].toObject()["mean"].toDouble(),
+                      demographicObject["age"].toObject()["variance"].toDouble());
+          face.setGender(demographicObject["gender"].toString());
+          picture.addFace(face);
+        }
+        mPictures->push_back(picture);
+        emit onUpdatePictures(mPictures);
+    }
+}
