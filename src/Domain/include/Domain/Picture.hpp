@@ -1,0 +1,33 @@
+#ifndef TEVIANCLIENT_DOMAIN_PICTURE_HPP
+#define TEVIANCLIENT_DOMAIN_PICTURE_HPP
+
+#include <Domain/Face.hpp>
+
+#include <QVector>
+
+namespace Domain {
+
+class Picture
+{
+public:
+  Picture();
+
+  //addFace
+  //getFaces
+  //set
+  //get
+  void addFace(const Face& face);
+  void setErrorString(const QString& errorMessage);
+  void proccessingSuccesful();
+  void proccessingFailed();
+  void setPictureName(const QString& name);
+private:
+  QVector<Face> mFaces;
+  QString mPictureName;
+  bool mIsProcessed;
+  QString mErrorString;
+};
+
+} // namespace Domain
+
+#endif// TEVIANCLIENT_DOMAIN_PICTURE_HPP
