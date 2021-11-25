@@ -4,5 +4,6 @@
         <file>qtquickcontrols2.conf</file>
         <file>MainWindow/Header.qml</file>
         <file>MainWindow/Body.qml</file>
+        <file>MainWindow/Footer.qml</file>
     </qresource>
 </RCC>

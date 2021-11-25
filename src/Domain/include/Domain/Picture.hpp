@@ -5,6 +5,8 @@
 
 #include <QVector>
 
+#include <memory>
+
 namespace Domain {
 
 class Picture
@@ -22,7 +24,7 @@ public:
   void proccessingFailed();
   void setPictureName(const QString& name);
 private:
-  QVector<Face> mFaces;
+  std::shared_ptr<QVector<Face>> mFaces;
   QString mPictureName;
   bool mIsProcessed;
   QString mErrorString;

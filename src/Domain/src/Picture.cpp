@@ -3,12 +3,12 @@
 
 Domain::Picture::Picture()
 {
-
+  mFaces = std::make_shared<QVector<Face>>();
 }
 
 void Domain::Picture::addFace(const Domain::Face& face)
 {
-  mFaces.push_back(face);
+  mFaces->push_back(face);
 }
 
 void Domain::Picture::setErrorString(const QString& errorMessage)

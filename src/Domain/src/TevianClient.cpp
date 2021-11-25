@@ -1,22 +1,15 @@
 #include <Domain/TevianClient.hpp>
 
-#include <QFile>
-#include <QUrl>
-#include <QJsonObject>
 #include <QJsonDocument>
-#include <QDebug>
-#include <QUrlQuery>
+#include <QJsonObject>
 #include <QEventLoop>
 #include <QJsonArray>
+#include <QUrlQuery>
+#include <QDebug>
+#include <QFile>
+#include <QUrl>
 
 #include <stdexcept>
-
-//  auto responsePOST = client.post(Base::Interfaces::IHttpClient::HttpRequest({
-//                        {{"Authorization", "Bearer "+token},{"Content-type","image/jpeg"}},
-//                        "https://backend.facecloud.tevian.ru/api/v1/detect",
-//                        {},
-//                        b64Enc}));
-//  auto a = responsePOST.data;
 
 //eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2Mzc2NTU4NTMsIm5iZiI6MTYzNzY1NTg1MywianRpIjoiY2EyMmIyYzEtZmE1OC00OWRkLTljMGEtMWYwNDlkYWI4ZjEyIiwic3ViIjoyNzIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.o4uKVenHwmahLprqwYPWdt76Sg9RcbSRdGgswnY4T2s
 

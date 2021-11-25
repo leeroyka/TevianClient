@@ -1,26 +1,50 @@
 import QtQuick 2.15
 import QtQuick.Layouts 1.3
+import QtQuick.Dialogs 1.2
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
 
+import Qt.labs.platform 1.0
 
 Rectangle {
+    function lock()
+    {
+      buttonDir.enabled = false;
+      buttonImages.enabled = false;
+      mouseArea.cursorShape = Qt.WaitCursor
+    }
+    function unlock()
+    {
+      buttonDir.enabled = false;
+      buttonImages.enabled = false;
+      mouseArea.cursorShape = Qt.ArrowCursor
+    }
+
     property int previousX
     property int previousY
     anchors.fill: parent
     color: "#191919"
-    z: 101
-    function changeChatType(type)
-    {
-      textLabelHeader.text = type
-      if(type == "Server")
-      {
-        buttonShowSettings.visible = false
-      }
-      else
-      {}
+
+    FileDialog {
+        id: fileDialogImages
+        title: "Please choose a images"
+        fileMode: FileDialog.OpenFiles
+        nameFilters: [ "Image files (*.jpg *.png *.jpeg)"]
+        onAccepted: {
+            qmlApp.uploadImages(fileDialogImages.files)
+        }
+        onRejected: {
+        }
     }
+    FolderDialog {
+        id: folderDialog
+        title: "Please choose a directory"
+        onAccepted: {
+        }
+    }
+
     MouseArea {
+            id: mouseArea
             anchors.fill: parent
             onPressed: {
                 previousX = mouseX
@@ -45,32 +69,44 @@ Rectangle {
         font.bold: true
         color: "White"
      }
-    Button{
-        id: buttonPrevious
-        anchors.top: parent.top
-        anchors.topMargin: (parent.height/2) - (buttonSave.height/2)
-        anchors.right: buttonSave.left
-        anchors.rightMargin: 10
-        text: qsTr('File')
-        onClicked: qmlApp.getHttpPost()
+    ComboBox {
+      currentIndex: 0
+      model: ListModel {
+        id: listImages
+        ListElement { text: "aaaa"}
+        ListElement { text: "Apple" }
+        ListElement { text: "Coconut" } // delete
+      }
+      width: 200
+      height: buttonImages.height
+      anchors.top: parent.top
+      anchors.right: buttonImages.left
+      anchors.rightMargin: 5
+      enabled: false
+      onCurrentIndexChanged: {
+
+      }
     }
 
     Button{
-        id: buttonSave
+        id: buttonImages
+        font.capitalization: Font.MixedCase
+        font.bold: true
         anchors.top: parent.top
-        anchors.topMargin: (parent.height/2) - (buttonSave.height/2)
-        anchors.right: buttonClose.left
-        anchors.rightMargin: 10
-        text: qsTr('Check')
-        onClicked: qmlApp.testFunc()
+        anchors.right: buttonDir.left
+        anchors.rightMargin: 5
+        text: qsTr('Open Images')
+        onClicked: fileDialogImages.open()
     }
+
     Button{
-        id: buttonClose
-        width: 50
-        anchors.top: buttonSave.top
+        id: buttonDir
+        anchors.top: parent.top
         anchors.right: parent.right
-        anchors.rightMargin: 10
-        text: qsTr('x')
-        onClicked: close()
+        anchors.rightMargin: 5
+        text: qsTr('Open Directory')
+        font.capitalization: Font.MixedCase
+        font.bold: true
+        onClicked: folderDialog.open()
     }
 }

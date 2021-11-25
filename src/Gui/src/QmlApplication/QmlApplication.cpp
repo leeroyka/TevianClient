@@ -5,6 +5,7 @@ namespace Gui
 
 QmlApplication::QmlApplication(QObject *parent) : QObject(parent)
 {
+
 }
 
 QmlApplication::~QmlApplication()
@@ -15,14 +16,47 @@ QmlApplication::~QmlApplication()
 void QmlApplication::getHttpPost()
 {
   int adsdas;
-  mTClient = std::make_shared<Domain::TevianClient>();
-  qDebug()<<mTClient->addImages({"D:\\test.jpg","D:\\test2.jpg"});
-  qDebug()<<mTClient->addImages({"D:\\test3.jpg"});
+  qDebug()<<mTClient->addImages({"/home/blokhin/Documents/test.jpeg"});
+  qDebug()<<mTClient->addImages({"/home/blokhin/Documents/test2.jpg"});
 }
 
 void QmlApplication::testFunc()
 {
-    auto pictures = *mTClient->getPictures();
+  auto pictures = *mTClient->getPictures();
+}
+
+void QmlApplication::initialization()
+{
+  try
+  {
+    qDebug()<<"initialization";
+    mTClient = std::make_shared<Domain::TevianClient>();
+  }
+  catch (const std::exception& error)
+  {
+    emit errorRecived(error.what());
+  }
+  catch (...)
+  {
+    emit errorRecived("Unknown error");
+  }
+  connect(mTClient.get(), &Domain::TevianClient::onUpdatePictures, this, &QmlApplication::processedImages);
+}
+
+void QmlApplication::uploadImages(const QList<QUrl>& pathsImages)
+{
+  emit imagesProcessed();
+  QVector<QString> images;
+  for(auto path : pathsImages)
+  {
+    images.push_back(path.path());
+  }
+  mTClient->addImages(images);
+}
+
+void QmlApplication::processedImages(std::shared_ptr<QVector<Domain::Picture>> pictures)
+{
+  emit imageProcessed(pictures->size(), mTClient->getNumberOfImages());
 }
 
 

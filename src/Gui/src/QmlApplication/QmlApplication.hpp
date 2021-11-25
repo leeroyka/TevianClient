@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QSettings>
 #include <QObject>
+#include <QList>
 
 #include <Domain/TevianClient.hpp>
 
@@ -21,12 +22,19 @@ public:
 
 signals:
 
+  void errorRecived(QString error);
+  void imagesProcessed();
+  void imagesReady();
+  void imageProcessed(qint32 images, qint32 maxImages);
 
 public slots:
 
   void getHttpPost();
-
   void testFunc();
+
+  void initialization();
+  void uploadImages(const QList<QUrl>& pathsImages);
+  void processedImages(std::shared_ptr<QVector<Domain::Picture>> pictures);
 private:
 
   std::shared_ptr<Domain::TevianClient> mTClient;
