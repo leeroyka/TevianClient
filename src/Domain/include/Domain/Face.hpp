@@ -11,7 +11,12 @@ public:
   Face(qint32 x, qint32 y, qint32 height, qint32 width);
   void setGender(QString gender);
   void setAge(qreal mean, qreal variance);
-
+  qint32 getX() const;
+  qint32 getY() const;
+  qint32 getHeight() const;
+  qint32 getWidth() const;
+  QString getGender() const;
+  QString getAge() const;
 private:
   qint32  mX;
   qint32  mY;

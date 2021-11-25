@@ -6,6 +6,11 @@ Domain::Picture::Picture()
     mFaces = std::make_shared<QVector<Face>>();
 }
 
+std::shared_ptr<QVector<Domain::Face> > Domain::Picture::getFaces() const
+{
+    return mFaces;
+}
+
 QString Domain::Picture::getPictureName() const
 {
     return mPictureName;

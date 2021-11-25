@@ -22,7 +22,15 @@ Item{
   }
   function setImage(path)
   {
-      image.source = "file:///"+path
+    image.source = "file:///"+path
+  }
+  function setFaces(faces)
+  {
+    for(let face of faces)
+    {
+        console.debug(face[0],face[1],face[2],face[3],face[4],face[5])
+    }
+
   }
 
   Component.onCompleted: {
@@ -38,18 +46,6 @@ Item{
       id: mouseArea
       anchors.fill: parent
     }
-//    Flickable
-//    {
-//        id: flickable
-//        anchors.fill: parent
-//        interactive: true
-//        contentWidth: image.width; contentHeight: image.height
-//        property alias imageSource: image.source
-//        Image {
-//            id: image
-//            source: "file:///C:/Users/blokh/Pictures/Camera Roll/WIN_20211029_16_48_34_Pro.jpg"
-//        }
-//    }
     Flickable {
         anchors.fill: parent
 
@@ -107,11 +103,13 @@ Item{
                 transformOrigin: Item.TopLeft
                 font.pixelSize: 15
                 scale: 1/image.scale
+                onScaleChanged: {
+
+                }
             }
         }
     }
 
-    // Mouse zoom
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.NoButton

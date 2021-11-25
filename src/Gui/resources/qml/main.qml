@@ -32,11 +32,14 @@ Window {
           header.unlock();
           header.addPictures(images)
           body.unlock();
-          footer.hideProgressBar();
         }
         onImageProcessed: {
           footer.updateProgressBar(images, maxImages)
           footer.updateInformation(images, maxImages)
+        }
+        onFacesRecived: {
+          body.setFaces(faces)
+          footer.hideProgressBar();
         }
     }
     Component.onCompleted: {

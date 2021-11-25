@@ -67,13 +67,27 @@ void QmlApplication::processedImages(std::shared_ptr<QVector<Domain::Picture>> p
   }
 }
 
-void QmlApplication::getImage(const QString& path) const
+void QmlApplication::getImage(const QString& path)
 {
     for(auto& picture : *mTClient->getPictures())
     {
         if(picture.getPictureName()==path)
         {
-            //faces and laces
+            QVariantList facesList;
+            for(auto& face : *picture.getFaces())
+            {
+                QVariantList faceList;
+                faceList.push_back(face.getX());
+                faceList.push_back(face.getY());
+                faceList.push_back(face.getWidth());
+                faceList.push_back(face.getHeight());
+                faceList.push_back(face.getAge());
+                faceList.push_back(face.getGender());
+
+                facesList.push_back(faceList);
+            }
+            emit facesRecived(facesList);
+            //error?
         }
     }
 }

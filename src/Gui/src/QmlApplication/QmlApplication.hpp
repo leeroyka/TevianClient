@@ -25,12 +25,13 @@ signals:
   void imagesProcessed();
   void imagesReady(const QVariantList& images);
   void imageProcessed(const qint32 images, const qint32 maxImages);
+  void facesRecived(const QVariantList& faces);
 
 public slots:
   void initialization();
   void uploadImages(const QList<QUrl>& pathsImages);
   void processedImages(std::shared_ptr<QVector<Domain::Picture>> pictures);
-  void getImage(const QString& path) const;
+  void getImage(const QString& path);
 
 private:
   std::shared_ptr<Domain::TevianClient> mTClient;

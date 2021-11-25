@@ -14,10 +14,7 @@ class Picture
 public:
   Picture();
 
-  //addFace
-  //getFaces
-  //set
-  //get
+  std::shared_ptr<QVector<Face>> getFaces() const;
   QString getPictureName() const;
   void addFace(const Face& face);
   void setErrorString(const QString& errorMessage);
