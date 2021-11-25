@@ -12,18 +12,6 @@ QmlApplication::~QmlApplication()
 {
 
 }
-// TODO TRY CATCH Обработка
-void QmlApplication::getHttpPost()
-{
-  int adsdas;
-  qDebug()<<mTClient->addImages({"/home/blokhin/Documents/test.jpeg"});
-  qDebug()<<mTClient->addImages({"/home/blokhin/Documents/test2.jpg"});
-}
-
-void QmlApplication::testFunc()
-{
-  auto pictures = *mTClient->getPictures();
-}
 
 void QmlApplication::initialization()
 {
@@ -47,11 +35,22 @@ void QmlApplication::uploadImages(const QList<QUrl>& pathsImages)
 {
   emit imagesProcessed();
   QVector<QString> images;
-  for(auto path : pathsImages)
+  try
   {
-    images.push_back(path.toString().remove(0,QString("file:///").length()));
+    for(auto path : pathsImages)
+    {
+      images.push_back(path.toString().remove(0,QString("file:///").length()));
+    }
+    mTClient->addImages(images);
   }
-  mTClient->addImages(images);
+  catch (const std::exception& error)
+  {
+    emit errorRecived(error.what());
+  }
+  catch (...)
+  {
+    emit errorRecived("Unknown error");
+  }
 }
 
 void QmlApplication::processedImages(std::shared_ptr<QVector<Domain::Picture>> pictures)
