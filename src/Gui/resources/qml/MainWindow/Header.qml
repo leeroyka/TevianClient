@@ -22,10 +22,12 @@ Rectangle {
     }
     function addPictures(pictures)
     {
+        listImages.clear()
         for(let picture of pictures)
         {
             listImages.append({picture})
         }
+
     }
     function getImage(path)
     {
@@ -97,6 +99,12 @@ Rectangle {
       font.pixelSize: 12
       popup.width: 400
       popup.font.pixelSize: 12
+      onCountChanged:
+      {
+        currentIndex = 0;
+        body.setImage(currentText);
+        qmlApp.getImage(currentText)
+      }
     }
 
     Button{

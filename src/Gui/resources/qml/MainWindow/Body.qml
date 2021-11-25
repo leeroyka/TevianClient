@@ -82,8 +82,8 @@ Item{
                 MouseArea {
                     hoverEnabled: true
                     anchors.fill: parent
-                    onEntered: rect.opacity = 1
-                    onExited: rect.opacity = 0.25
+                    onEntered: {rect.opacity = 1; rect.color = Qt.rgba(0,1,0,0.05)}
+                    onExited: {rect.opacity = 0.25;  rect.color = Qt.rgba(0,1,0,0)}
                 }
             }
             TextArea{
