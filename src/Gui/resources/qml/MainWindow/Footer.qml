@@ -40,6 +40,7 @@ Rectangle {
         anchors.fill: parent
         anchors.topMargin: 3
         anchors.leftMargin: 10
+        font.pixelSize: 12
         text: qsTr("Images selected (<b>0</b>);")
         color: "White"
      }

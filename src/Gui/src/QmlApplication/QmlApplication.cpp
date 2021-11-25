@@ -49,7 +49,7 @@ void QmlApplication::uploadImages(const QList<QUrl>& pathsImages)
   QVector<QString> images;
   for(auto path : pathsImages)
   {
-    images.push_back(path.path());
+    images.push_back(path.toString().remove(0,QString("file:///").length()));
   }
   mTClient->addImages(images);
 }

@@ -16,6 +16,7 @@ Window {
     minimumHeight: 400
     minimumWidth: 600
     title: qsTr("TevianClient")
+    color: "#353535"
     //flags: Qt.FramelessWindowHint | Qt.Window
     Connections {
         target: qmlApp
