@@ -56,6 +56,15 @@ void QmlApplication::uploadImages(const QList<QUrl>& pathsImages)
 void QmlApplication::processedImages(std::shared_ptr<QVector<Domain::Picture>> pictures)
 {
   emit imageProcessed(pictures->size(), mTClient->getNumberOfImages());
+  if(pictures->size() == mTClient->getNumberOfImages())
+  {
+        QVariantList images;
+        for(auto picture : *pictures)
+        {
+            images.push_back(picture.getPictureName());
+        }
+        emit imagesReady(images);
+  }
 }
 
 

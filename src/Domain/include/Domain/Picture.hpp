@@ -18,6 +18,7 @@ public:
   //getFaces
   //set
   //get
+  QString getPictureName() const;
   void addFace(const Face& face);
   void setErrorString(const QString& errorMessage);
   void proccessingSuccesful();

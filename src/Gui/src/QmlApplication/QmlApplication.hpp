@@ -21,22 +21,17 @@ public:
   ~QmlApplication();
 
 signals:
-
-  void errorRecived(QString error);
+  void errorRecived(const QString& error);
   void imagesProcessed();
-  void imagesReady();
-  void imageProcessed(qint32 images, qint32 maxImages);
+  void imagesReady(const QVariantList& images);
+  void imageProcessed(const qint32 images, const qint32 maxImages);
 
 public slots:
-
-  void getHttpPost();
-  void testFunc();
-
   void initialization();
   void uploadImages(const QList<QUrl>& pathsImages);
   void processedImages(std::shared_ptr<QVector<Domain::Picture>> pictures);
-private:
 
+private:
   std::shared_ptr<Domain::TevianClient> mTClient;
 
 };

@@ -14,7 +14,7 @@ Window {
     width: 900
     height: 700
     minimumHeight: 400
-    minimumWidth: 600
+    minimumWidth: 650
     title: qsTr("TevianClient")
     color: "#353535"
     //flags: Qt.FramelessWindowHint | Qt.Window
@@ -30,8 +30,9 @@ Window {
         }
         onImagesReady: {
           header.unlock();
+          header.addPictures(images)
           body.unlock();
-          footer.showProgressBar();
+          footer.hideProgressBar();
         }
         onImageProcessed: {
           footer.updateProgressBar(images, maxImages)

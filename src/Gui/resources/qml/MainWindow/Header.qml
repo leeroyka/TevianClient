@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Dialogs 1.2
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
+import QtQuick.Controls.Styles 1.4
 
 import Qt.labs.platform 1.0
 
@@ -15,9 +16,16 @@ Rectangle {
     }
     function unlock()
     {
-      buttonDir.enabled = false;
-      buttonImages.enabled = false;
+      buttonDir.enabled = true;
+      buttonImages.enabled = true;
       mouseArea.cursorShape = Qt.ArrowCursor
+    }
+    function addPictures(pictures)
+    {
+        for(let picture of pictures)
+        {
+            listImages.append({picture})
+        }
     }
 
     property int previousX
@@ -73,19 +81,18 @@ Rectangle {
       currentIndex: 0
       model: ListModel {
         id: listImages
-        ListElement { text: "aaaa"}
-        ListElement { text: "Apple" }
-        ListElement { text: "Coconut" } // delete
       }
-      width: 200
+      width: 250
       height: buttonImages.height
       anchors.top: parent.top
       anchors.right: buttonImages.left
       anchors.rightMargin: 5
-      enabled: false
       onCurrentIndexChanged: {
 
       }
+      font.pixelSize: 12
+      popup.width: 400
+      popup.font.pixelSize: 12
     }
 
     Button{

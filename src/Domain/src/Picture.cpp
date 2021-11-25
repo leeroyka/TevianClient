@@ -3,7 +3,12 @@
 
 Domain::Picture::Picture()
 {
-  mFaces = std::make_shared<QVector<Face>>();
+    mFaces = std::make_shared<QVector<Face>>();
+}
+
+QString Domain::Picture::getPictureName() const
+{
+    return mPictureName;
 }
 
 void Domain::Picture::addFace(const Domain::Face& face)
