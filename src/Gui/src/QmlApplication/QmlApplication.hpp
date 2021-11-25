@@ -30,6 +30,7 @@ public slots:
   void initialization();
   void uploadImages(const QList<QUrl>& pathsImages);
   void processedImages(std::shared_ptr<QVector<Domain::Picture>> pictures);
+  void getImage(const QString& path) const;
 
 private:
   std::shared_ptr<Domain::TevianClient> mTClient;

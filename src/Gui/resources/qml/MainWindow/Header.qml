@@ -27,7 +27,10 @@ Rectangle {
             listImages.append({picture})
         }
     }
-
+    function getImage(path)
+    {
+    }
+    z: 150
     property int previousX
     property int previousY
     anchors.fill: parent
@@ -88,7 +91,8 @@ Rectangle {
       anchors.right: buttonImages.left
       anchors.rightMargin: 5
       onCurrentIndexChanged: {
-
+          body.setImage(currentText)
+          qmlApp.getImage(currentText)
       }
       font.pixelSize: 12
       popup.width: 400

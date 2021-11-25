@@ -59,12 +59,23 @@ void QmlApplication::processedImages(std::shared_ptr<QVector<Domain::Picture>> p
   if(pictures->size() == mTClient->getNumberOfImages())
   {
         QVariantList images;
-        for(auto picture : *pictures)
+        for(auto& picture : *pictures)
         {
             images.push_back(picture.getPictureName());
         }
         emit imagesReady(images);
   }
+}
+
+void QmlApplication::getImage(const QString& path) const
+{
+    for(auto& picture : *mTClient->getPictures())
+    {
+        if(picture.getPictureName()==path)
+        {
+            //faces and laces
+        }
+    }
 }
 
 
