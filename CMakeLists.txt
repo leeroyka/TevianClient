@@ -8,6 +8,4 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 option(ENABLE_CLI_APPLICATION	"Console client application"	${DEFAULT_OPT})
 
-set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${PROJECT_SOURCE_DIR}/decode.bat")
-
 add_subdirectory(src)
