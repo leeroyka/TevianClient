@@ -62,15 +62,20 @@ void QmlApplication::uploadImages(const QList<QUrl>& pathsImages)
 void QmlApplication::uploadFolder(const QUrl& pathFolder)
 {
   QDir dir;
-  dir.setPath(pathFolder.path());
+  QUrl url("test");
+  QString path = pathFolder.path();
+  #if defined(Q_OS_WIN)
+  path.remove(0,1);
+  #endif
+  dir.setPath(path);
   //qDebug()<<dir.entryList({"*.jpeg","*.jpg", "*.png"},QDir::Files | QDir::Readable,QDir::NoSort);
   QList<QUrl> pathImages;
   for(auto& path : dir.entryList({"*.jpeg","*.jpg", "*.png"},QDir::Files | QDir::Readable,QDir::NoSort))
   {
-    #if defined(Q_OS_WIN)
-      pathImages.push_back(pathFolder.toString()+'\\'+path);
-      continue;
-    #endif
+ //   #if defined(Q_OS_WIN)
+   //   pathImages.push_back(pathFolder.toString()+'\\'+path);
+   //   continue;
+   // #endif
     pathImages.push_back(pathFolder.toString()+'/'+path);
   }
   if(pathImages.empty())
