@@ -22,14 +22,14 @@ Installation
 Compilation
 ------	
 - The code can be compiled with the provided cmake file using the standard make command.
-- If compiling the code manually, if you want to use the CLI version, include the following flags:
+- If compiling the code manually and you want to use the CLI version, include the following flags:
 ```
-ENABLE_CLI_APPLICATION ON
+ENABLE_CLI_APPLICATION **ON**
 ```
 
 Requirements
 ------
-- Qt5
-- OpenSSL 2.0 or newest
-- C++11 or newest
-- Cmake 2.8 or newest
+- **Qt5**
+- **OpenSSL** 2.0 or newest
+- **C++11** or newest
+- **Cmake** 2.8 or newest
