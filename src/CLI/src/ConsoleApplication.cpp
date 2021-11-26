@@ -41,7 +41,7 @@ void CLI::ConsoleApplication::uploadFolder(const QString& pathFolder) const
   for(auto& path : dir.entryList({"*.jpeg","*.jpg", "*.png"},QDir::Files | QDir::Readable,QDir::NoSort))
   {
     #if defined(Q_OS_WIN)
-      pathImages.push_back(pathFolder.toString()+'\\'+path);
+      pathImages.push_back(pathFolder+'\\'+path);
       continue;
     #endif
     pathImages.push_back(pathFolder+'/'+path);
