@@ -24,9 +24,22 @@ Rectangle {
       progressBar.to = maxImages
       progressBar.value = images
     }
+    property int numberOfImages: 0
+    property int numberOfSelectedImages: 0
+    property int numberOfFaces: 0
     function updateInformation(images,maxImages)
     {
+      numberOfImages = images
+      numberOfSelectedImages = maxImages
       textImagesSelected.text = "Images processed (<b>"+images+"</b>); Images selected (<b>"+maxImages+"</b>)"
+    }
+    function setNumberOfFaces(faces)
+    {
+      numberOfFaces= faces
+      textImagesSelected.text = "Faces on image: (<b>"
+          +faces+"</b>); Images processed (<b>"
+          +numberOfImages+"</b>); Images selected (<b>"
+          +numberOfSelectedImages+"</b>);"
     }
 
     anchors.bottom: parent
@@ -44,6 +57,13 @@ Rectangle {
         text: qsTr("Images selected (<b>0</b>);")
         color: "White"
      }
+    Text {
+      id: textFaces
+      anchors.left: textImagesSelected.right
+      font.pixelSize: 12
+      color:"white"
+    }
+
     ProgressBar {
         id: progressBar
         anchors.right: parent.right

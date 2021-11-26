@@ -14,11 +14,12 @@ class IClient : public QObject
 public:
     virtual ~IClient() = default;
 
+  virtual QString getJWToken() const = 0;
+  virtual void postRequest(QNetworkRequest& request, QByteArray& data) = 0;
+
 private:
     virtual void authentication() = 0;
     virtual void setJWToken(const QString& token) = 0;
-    virtual QString getJWToken() const = 0;
-    virtual void postRequest(QNetworkRequest& request, QByteArray& data) = 0;
     virtual void handler(const QString& path, const QByteArray& data) = 0;
 
 };

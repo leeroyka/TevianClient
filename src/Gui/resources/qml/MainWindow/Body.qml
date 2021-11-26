@@ -24,18 +24,66 @@ Item{
   {
     image.source = "file:///"+path
   }
+  property variant arrayFaces
   function setFaces(faces)
   {
+    for(var i in arrayFaces)
+      arrayFaces[i].destroy()
+    arrayFaces = []
     for(let face of faces)
     {
-        console.debug(face[0],face[1],face[2],face[3],face[4],face[5])
+      let rectFace = faceRectangle.createObject(image);
+      rectFace.x      = face[0]
+      rectFace.y      = face[1]
+      rectFace.width  = face[2]
+      rectFace.height = face[3]
+      rectFace.text   = "Age: " + face[4] + "\nGender: " + face[5];
+      arrayFaces.push(rectFace)
     }
-
   }
 
   Component.onCompleted: {
       qmlApp.initialization()
   }
+  Component {
+    id: faceRectangle
+
+    Rectangle {
+        x: 10
+        y: 10
+        property alias text: textArea.text
+        color: Qt.rgba(1,1,1,0);
+        border.color: "green"
+        opacity: 0.45
+        border.width: 3/image.scale
+        width: 80; height: 80
+        MouseArea {
+            hoverEnabled: true
+            anchors.fill: parent
+            onEntered: {parent.opacity = 1; parent.color = Qt.rgba(0,1,0,0.12);}
+            onExited: {parent.opacity = 0.45;  parent.color = Qt.rgba(0,1,0,0)}
+        }
+        TextArea{
+            id:             textArea
+            anchors.left:   parent.left
+            anchors.bottom: parent.top
+            color:          "white"
+            background: Rectangle {
+                anchors.fill: parent
+                color: "green"
+            }
+            text:            "Age: 0\nGender: true "
+            bottomPadding:   -1
+            topPadding:      -1
+            leftPadding:     2
+            rightPadding:    2
+            transformOrigin: Item.BottomLeft
+            font.pixelSize:  15
+            scale:           1/image.scale
+        }
+    }
+  }
+
   Rectangle {
       anchors.fill: parent
       color: "#353535"
@@ -70,50 +118,12 @@ Item{
             scale: Math.min(mainWindow.width / width, mainWindow.height / height, 1) + zoom
 
             source: ""
-            Rectangle {
-                id: rect
-                x: 10
-                y: 10
-                color: Qt.rgba(1,1,1,0);
-                border.color: "green"
-                opacity: 0.25
-                border.width: 4/image.scale
-                width: 80; height: 80
-                MouseArea {
-                    hoverEnabled: true
-                    anchors.fill: parent
-                    onEntered: {rect.opacity = 1; rect.color = Qt.rgba(0,1,0,0.05)}
-                    onExited: {rect.opacity = 0.25;  rect.color = Qt.rgba(0,1,0,0)}
-                }
-            }
-            TextArea{
-                id: text
-                x:10
-                y:10 - (text.height/image.scale)
-                color: "white"
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: "green"
-                }
-                text: "Age: 0\nGender: true "
-                bottomPadding: -1
-                topPadding: -1
-                leftPadding: 2
-                rightPadding: 2
-                transformOrigin: Item.TopLeft
-                font.pixelSize: 15
-                scale: 1/image.scale
-                onScaleChanged: {
-
-                }
-            }
         }
     }
 
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.NoButton
-
         onWheel: {
             if (wheel.angleDelta.y > 0)
                 image.zoom = Number((image.zoom + image.zoomStep).toFixed(1))

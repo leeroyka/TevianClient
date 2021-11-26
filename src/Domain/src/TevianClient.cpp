@@ -5,14 +5,12 @@
 #include <QEventLoop>
 #include <QJsonArray>
 #include <QUrlQuery>
-#include <QDebug>
 #include <QFile>
 #include <QUrl>
 
 #include <stdexcept>
 
 //eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2Mzc2NTU4NTMsIm5iZiI6MTYzNzY1NTg1MywianRpIjoiY2EyMmIyYzEtZmE1OC00OWRkLTljMGEtMWYwNDlkYWI4ZjEyIiwic3ViIjoyNzIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.o4uKVenHwmahLprqwYPWdt76Sg9RcbSRdGgswnY4T2s
-
 
 Domain::TevianClient::TevianClient()
   :  mNumberOfImages(0)
@@ -143,7 +141,6 @@ void Domain::TevianClient::handler(const QString& path, const QByteArray& data)
         Picture picture;
         QJsonDocument json = QJsonDocument::fromJson(data);
         picture.setPictureName(json.object()["Content-Disposition"].toString());
-        qDebug()<<json.object()["Content-Disposition"].toString();
         if (json.object().contains("error"))
         {
           picture.proccessingFailed();

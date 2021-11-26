@@ -27,13 +27,13 @@ public slots:
     size_t getPicturesSize() const;
 
     // TODO DOXYGEN DOCUMENTATION
+    QString getJWToken() const override;
+    void postRequest(QNetworkRequest& request, QByteArray& data) override;
 
 private:
     void authentication() override;
     void setJWToken(const QString& token) override;
     void detectRequest(const QString& imagePath);
-    QString getJWToken() const override;
-    void postRequest(QNetworkRequest& request, QByteArray& data) override;
     void handler(const QString& path, const QByteArray& data) override;
 
 private:

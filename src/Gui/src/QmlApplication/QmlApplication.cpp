@@ -1,5 +1,7 @@
 #include <QmlApplication/QmlApplication.hpp>
 
+#include <QDir>
+
 namespace Gui
 {
 
@@ -39,7 +41,11 @@ void QmlApplication::uploadImages(const QList<QUrl>& pathsImages)
   {
     for(auto path : pathsImages)
     {
-      images.push_back(path.toString().remove(0,QString("file:///").length()));
+      QString image = path.toString().remove(0,QString("file://").length());
+    #if defined(Q_OS_WIN)
+        image = image.remove(0,1);
+    #endif
+      images.push_back(image);
     }
     mTClient->addImages(images);
   }
@@ -51,6 +57,25 @@ void QmlApplication::uploadImages(const QList<QUrl>& pathsImages)
   {
     emit errorRecived("Unknown error");
   }
+}
+
+void QmlApplication::uploadFolder(const QUrl& pathFolder)
+{
+  QDir dir;
+  dir.setPath(pathFolder.path());
+  //qDebug()<<dir.entryList({"*.jpeg","*.jpg", "*.png"},QDir::Files | QDir::Readable,QDir::NoSort);
+  QList<QUrl> pathImages;
+  for(auto& path : dir.entryList({"*.jpeg","*.jpg", "*.png"},QDir::Files | QDir::Readable,QDir::NoSort))
+  {
+    #if defined(Q_OS_WIN)
+      pathImages.push_back(pathFolder.toString()+'\\'+path);
+      continue;
+    #endif
+    pathImages.push_back(pathFolder.toString()+'/'+path);
+  }
+  if(pathImages.empty())
+    return;
+  uploadImages(pathImages);
 }
 
 void QmlApplication::processedImages(std::shared_ptr<QVector<Domain::Picture>> pictures)
