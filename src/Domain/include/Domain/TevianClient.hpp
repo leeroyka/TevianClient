@@ -15,42 +15,96 @@ class TevianClient : public IClient
 {
     Q_OBJECT
 public:
-    TevianClient();
+  /*!
+     * \brief TevianClient конструктор по умолчанию для клиента
+     */
+  TevianClient();
 
 signals:
-    void onUpdatePictures(std::shared_ptr<QVector<Picture>>);
+  /*!
+   * \brief onUpdatePictures сигнал о получении изображений
+   */
+  void onUpdatePictures(std::shared_ptr<QVector<Picture>>);
 
 public slots:
-    qint32 addImages(const QVector<QString>& images);
-    size_t getNumberOfImages() const;
-    std::shared_ptr<QVector<Picture>> getPictures() const;
-    size_t getPicturesSize() const;
+  /*!
+   * \brief addImages добавить изображение
+   * \param images изображение
+   * \return количество изображений
+   */
+  qint32 addImages(const QVector<QString>& images);
 
-    // TODO DOXYGEN DOCUMENTATION
-    QString getJWToken() const override;
-    void postRequest(QNetworkRequest& request, QByteArray& data) override;
+  /*!
+   * \brief getNumberOfImages получить количество изображений
+   * \return количество изображений
+   */
+  size_t getNumberOfImages() const;
+
+  /*!
+   * \brief getPictures получить указатель на вектор изображений
+   * \return указатель на вектор изображений
+   */
+  std::shared_ptr<QVector<Picture>> getPictures() const;
+
+  /*!
+   * \brief getPicturesSize Получить количество обработанных изображений
+   * \return количество обработанных изображений
+   */
+  size_t getPicturesSize() const;
+
+  /*!
+   * \brief getJWToken получить JWToken токен
+   * \return токен
+   */
+  QString getJWToken() const override;
+
+  /*!
+   * \brief postRequest Отправка POST запроса
+   * \param request Запрос
+   * \param data Тело запроса
+   */
+  void postRequest(QNetworkRequest& request, QByteArray& data) override;
 
 private:
-    void authentication() override;
-    void setJWToken(const QString& token) override;
-    void detectRequest(const QString& imagePath);
-    void handler(const QString& path, const QByteArray& data) override;
+  /*!
+   * \brief authentication аутентификация
+   */
+  void authentication() override;
+
+  /*!
+   * \brief setJWToken установить JWToken токен
+   * \param token токен
+   */
+  void setJWToken(const QString& token) override;
+
+  /*!
+   * \brief detectRequest поиск лиц на изображении
+   * \param imagePath путь до изображения
+   */
+  void detectRequest(const QString& imagePath);
+
+  /*!
+   * \brief handler Обработчик ответа от сервера
+   * \param path путь
+   * \param data тело ответа
+   */
+  void handler(const QString& path, const QByteArray& data) override;
 
 private:
-    std::shared_ptr<QVector<Picture>> mPictures;
+  std::shared_ptr<QVector<Picture>> mPictures; ///< указатель на вектор изображений
 
-    size_t mNumberOfImages;
-    QString mJWToken;
+  size_t  mNumberOfImages; ///< Количество изображений
+  QString mJWToken;        ///< JWToken Токен
 
-    const QString M_LOGIN    = "blokhin321@gmail.com";
-    const QString M_PASSWORD = "8765432l";
+  const QString M_LOGIN    = "blokhin321@gmail.com"; ///< логин для аутентификации
+  const QString M_PASSWORD = "8765432l";             ///< пароль для аутентификации
 
-    const QString M_SERVER      = "https://backend.facecloud.tevian.ru/";
-    const QString M_PATH_LOGIN  = "/api/v1/login";
-    const QString M_PATH_DETECT = "/api/v1/detect";
+  const QString M_SERVER      = "https://backend.facecloud.tevian.ru/"; ///< хост
+  const QString M_PATH_LOGIN  = "/api/v1/login";                        ///< путь до аутентификации
+  const QString M_PATH_DETECT = "/api/v1/detect";                       ///< путь до обработчика изображения
 
-    const QString M_CONTENT_TYPE_JSON = "application/json";
-    const QString M_CONTENT_TYPE_JPEG = "image/jpeg";
+  const QString M_CONTENT_TYPE_JSON = "application/json"; ///< Content-type для json запросов
+  const QString M_CONTENT_TYPE_JPEG = "image/jpeg";       ///< Content-type для запросов в виде изображений
 };
 
 } // namespace Domain
